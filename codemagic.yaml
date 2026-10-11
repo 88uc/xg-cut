@@ -6,13 +6,14 @@ workflows:
     scripts:
       - name: Extract Project Files
         script: |
-          unzip xg-cut-github-build.zip -d .
-          mv xg-cut-github-build/* . || true
+          unzip xg-cut-github-build.zip -d extracted_project || true
+          cd extracted_project && cd $(ls -d */ | head -n 1) && cp -r ./* ../../ || true
       - name: Set up local.properties
         script: |
+          mkdir -p android
           echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
       - name: Build Android Release APK
         script: |
-          cd android && ./gradlew assembleRelease
+          cd android && chmod +x gradlew && ./gradlew assembleRelease
     artifacts:
-      - android/app/build/outputs/apk/release/*.apk
+      - "**/build/outputs/apk/release/*.apk"
