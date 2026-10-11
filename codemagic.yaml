@@ -1,13 +1,18 @@
 workflows:
   android-workflow:
-    name: Android Build Workflow
+    name: Android Node Build Workflow
     max_build_duration: 60
     instance_type: mac_mini_m1
+    environment:
+      node: latest
     scripts:
       - name: Extract Project Files
         script: |
           unzip xg-cut-github-build.zip -d extracted_project || true
           cd extracted_project && cd $(ls -d */ | head -n 1) && cp -r ./* ../../ || true
+      - name: Install Node Dependencies
+        script: |
+          npm install --legacy-peer-deps || yarn install || true
       - name: Set up local.properties
         script: |
           mkdir -p android
